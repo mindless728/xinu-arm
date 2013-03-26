@@ -1,0 +1,11 @@
+#This Makefile contains rules to build files in the mem/ directory.
+
+# Name of this component (the directory this file is stored in)
+COMP = mmu
+
+# Region Allocator files
+FILES = paging.c
+
+# Add the files to the compile source path
+DIR = ${TOPDIR}/${COMP}
+COMP_SRC += ${FILES:%=${DIR}/%}
