@@ -17,3 +17,4 @@ struct mmu_small_desc {
 };
 
 unsigned int * global_PAT; //global page allocation table
+unsigned int number_pages; //number of pages in memory

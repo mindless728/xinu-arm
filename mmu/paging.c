@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "paging.h"
 
 inline unsigned int get_page_index(unsigned int page) {
@@ -41,7 +42,7 @@ void unset_page_alloc(unsigned int page) {
     unsigned int mask;
 
     index = get_page_index(page);
-    mask - get_page_mask(page);
+    mask = get_page_mask(page);
 
     global_PAT[index] &= mask;
 
@@ -49,7 +50,7 @@ void unset_page_alloc(unsigned int page) {
 }
 
 unsigned int alloc_page() {
-    return allooc_pages_aligned(1, 1);
+    return alloc_pages_aligned(1, 1);
 }
 
 unsigned int alloc_page_aligned(unsigned int alignment) {
@@ -61,5 +62,43 @@ unsigned int alloc_pages(unsigned int amount) {
 }
 
 unsigned int alloc_pages_aligned(unsigned int amount, unsigned int alignment) {
-    return 0;
+    unsigned int ret;
+    unsigned int i;
+    unsigned int done;
+
+    for(ret = 0; ret < number_pages; ret += alignment) {
+        done = 0;
+        for(i = 0; i < amount; ++i) {
+            if(!is_page_free(ret + i))
+                break;
+            if(i == (amount - 1))
+                done = 1;
+        }
+        if(done)
+            break;
+    }
+
+    if(ret >= number_pages)
+        return SYSERR;
+
+    for(i = 0; i < amount; ++i)
+        set_page_alloc(ret + i);
+
+    return ret;
+}
+
+void dealloc_page(unsigned int page) {
+}
+
+void dealloc_pages(unsigned int page, unsigned int amount) {
+}
+
+void dealloc_page_table(unsigned int * PAT) {
+    unsigned int i;
+    unsigned int indices;
+
+    indices = number_pages >> 5;
+
+    for(i = 0; i < indices; ++i)
+        global_PAT[i] &= ~(PAT[i]);
 }
