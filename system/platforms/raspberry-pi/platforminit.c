@@ -12,6 +12,10 @@
 #include "vic.h"
 #include "gpio.h"
 
+//mmu includes
+#include <mmu.h>
+#include <paging.h>
+
 extern ulong cpuid;                     /* Processor id                    */
 extern struct platform platform;        /* Platform specific configuration */
 
@@ -38,6 +42,9 @@ int platforminit( void )
 
     //initialize the VIC
     vic_init();
+
+    //initialize the mmu and set things up
+    mmu_init();
 
     /*
      * Go into an infinite loop waiting for user to type the @ sign.

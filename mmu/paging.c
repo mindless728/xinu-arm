@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "paging.h"
+#include <paging.h>
 
 inline unsigned int get_page_index(unsigned int page) {
     return page >> 5;
