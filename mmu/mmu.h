@@ -1,4 +1,10 @@
+#ifndef MMU_H
+#define MMU_H
+
 #include <stddef.h>
+
+#define PAGE_SIZE 4096
+#define PAGE_SHIFT 12
 
 struct mmu_course_desc {
     uint type           : 2 ;
@@ -18,3 +24,5 @@ struct mmu_small_desc {
 
 unsigned int * global_PAT; //global page allocation table
 unsigned int number_pages; //number of pages in memory
+
+#endif
