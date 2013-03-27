@@ -2,7 +2,15 @@
 #define PAGING_H
 
 #include <stddef.h>
-#include <mmu.h>
+
+#define PAGE_SIZE 4096
+#define PAGE_SHIFT 12
+
+extern unsigned int * global_PAT; //address of the global PAT
+extern unsigned int number_pages; //number of pages in memory
+extern unsigned int size_of_PAT; //size  of the PAT in pages
+
+void paging_init(void);
 
 inline unsigned int get_page_index(unsigned int page);
 inline unsigned int get_page_shift(unsigned int page);

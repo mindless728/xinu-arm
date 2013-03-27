@@ -1,5 +1,27 @@
 #include <stddef.h>
 #include <paging.h>
+#include <platform.h>
+
+unsigned int * global_PAT;
+unsigned int number_pages;
+unsigned int size_of_PAT;
+
+void paging_init(void) {
+    //get number of pages
+    number_pages = ((unsigned int)platform.maxaddr) >> PAGE_SHIFT;
+
+    //get number of pages the size of the PAT is
+    size_of_PAT = (((number_pages + 7) >> 3) + PAGE_SIZE - 1) >> PAGE_SHIFT;
+
+    //get the last location of the kernel rounded up to nearest page
+    
+
+    //mark all of those pages as used
+
+    //get the size of the PAT in pages
+
+    //set those pages as used
+}
 
 inline unsigned int get_page_index(unsigned int page) {
     return page >> 5;

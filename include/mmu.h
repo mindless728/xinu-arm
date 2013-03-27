@@ -3,9 +3,6 @@
 
 #include <stddef.h>
 
-#define PAGE_SIZE 4096
-#define PAGE_SHIFT 12
-
 struct mmu_course_desc {
     uint type           : 2 ;
     uint SBZ            : 3 ;
@@ -22,9 +19,8 @@ struct mmu_small_desc {
     uint addr           : 20;
 };
 
-extern unsigned int * global_PAT; //global page allocation table
-extern unsigned int number_pages; //number of pages in memory
-
 unsigned int mmu_init();
+unsigned int mmu_enable();
+unsigned int mmu_disable();
 
 #endif

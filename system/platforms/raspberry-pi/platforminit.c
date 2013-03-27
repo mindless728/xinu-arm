@@ -43,9 +43,6 @@ int platforminit( void )
     //initialize the VIC
     vic_init();
 
-    //initialize the mmu and set things up
-    mmu_init();
-
     /*
      * Go into an infinite loop waiting for user to type the @ sign.
      * This will get Xinu going and produce output, like "Welcome
@@ -72,6 +69,8 @@ int platforminit( void )
     //platform.uart_dll = 1337 /*Divisor Latch Low Byte, not useful?*/ /** \todo fixme */;
     //platform.uart_irqnum = 0; /*UART IRQ number? Not read anywhere.*/
 
+    //mmu initialization
+    mmu_init();
 
     return OK;
 }
