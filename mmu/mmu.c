@@ -75,16 +75,92 @@ void * get_table_addr_phys(void) {
 }
 
 unsigned int create_mapping(void * virt, void * phys) {
-    //TODO create the damn mapping
-    return 0;
+    mmu_course_desc * table = (mmu_course_desc *)get_table_addr_virt();
+    return create_mapping_ttb(virt, phys, table);
+}
+
+unsigned int create_mapping_ttb(void * virt, void * phys, mmu_course_desc * table) {
+    unsigned int i;
+    void * page;
+    unsigned int course_index;
+    mmu_course_desc * course_desc;
+    mmu_small_desc * small_desc;
+    mmu_course_desc * table_phys;
+
+    //get the course description on the 4MB boundary
+    course_index = get_course_index((void*)(((unsigned int)virt) & 0xFFC00000));
+    course_desc = get_course_desc(course_index, table);
+
+    //if there is an invalid entry, we need to allocate for the small tables for the next 4MB
+    if(course_desc->type == MMU_NOMAP_TYPE) {
+        //alloc a new page and get the address of it
+        page = page_to_address(alloc_page());
+
+        //go through each course entry (1MB of mapping) and give it an address to the page
+        for(i = 0; i < 4; ++i) {
+            course_desc = get_course_desc(course_index + i, table);
+            course_desc->type = MMU_COURSE_TYPE;
+            course_desc->SBZ = 0;
+            course_desc->domain = 0;
+            course_desc->IMP = 0;
+            course_desc->addr = ((unsigned int)page + i * 0x400) >> 10; //shift by 10 to fit into bit field
+        }
+
+        //add the mapping for the page of memory allocated so the cpu can edit it
+        create_mapping_ttb(NULL, page, table);
+    }
+
+    //get the physcal address to the course table
+    table_phys = (mmu_course_desc *)get_phys_addr(table);
+
+    //turn off interuptis
+    enable();
+
+    //turn off the mmu
+    mmu_disable();
+
+    //get the small descriptor from the index
+    small_desc = get_small_desc(get_small_index(virt), table_phys);
+
+    //set the fields of the descriptor
+    small_desc->type = MMU_SMALL_TYPE;
+    small_desc->bufferable = 0;
+    small_desc->cacheable = 0;
+    small_desc->ap = MMU_AP_NONE;
+    small_desc->addr = ((unsigned int)phys) >> 12; //shift by 12 to fit into bit field
+
+    //turn on mmu
+    mmu_enable();
+
+    //turn on interupts
+    disable();
 }
 
 unsigned int remove_mapping(void * virt) {
-    //TODO strip out the damn mapping (L2 only though)
-    return 0;
+    mmu_course_desc * table = (mmu_course_desc *)get_table_addr_virt();
+    return remove_mapping_ttb(virt, table);
+}
+
+unsigned int remove_mapping_ttb(void * virt, mmu_course_desc * table) {
 }
 
 void * get_phys_addr(void * virt) {
     //TODO do a table walk in software
     return NULL;
+}
+
+inline unsigned int get_course_index(void * addr) {
+    return ((unsigned int)addr) >> 20;
+}
+
+inline mmu_course_desc * get_course_desc(unsigned int index, mmu_course_desc * table) {
+    return &(table[index]);
+}
+
+inline unsigned int get_small_index(void * addr) {
+    return (((unsigned int)addr) >> 12) & 0xFF;
+}
+
+inline mmu_small_desc * get_small_desc(unsigned int index, mmu_small_desc * table) {
+    return &(table[index]);
 }

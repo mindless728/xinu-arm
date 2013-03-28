@@ -15,6 +15,7 @@
 #include <platform.h>
 #include <stddef.h>
 #include <memory.h>
+#include <mmu.h>
 
 /* unusual value marks the top of the thread stack                      */
 #define STACKMAGIC  0x0A0AAAA9
@@ -75,6 +76,8 @@ struct thrent
     bool hasmsg;                /**< nonzero iff msg is valid           */
     struct memblock memlist;    /**< free memory list of thread         */
     int fdesc[NDESC];           /**< device descriptors for thread      */
+    unsigned int * PAT;         /**< Page Allocation Table              */
+    struct mmu_info info;            /**< holds mmu information              */
 };
 
 extern struct thrent thrtab[];

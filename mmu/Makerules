@@ -4,7 +4,7 @@
 COMP = mmu
 
 # Region Allocator files
-FILES = paging.c mmu.c
+FILES = paging.c mmu.c tlb.c
 
 # Add the files to the compile source path
 DIR = ${TOPDIR}/${COMP}
