@@ -19,8 +19,17 @@ struct mmu_small_desc {
     uint addr           : 20;
 };
 
-unsigned int mmu_init();
-unsigned int mmu_enable();
-unsigned int mmu_disable();
+unsigned int mmu_init(void);
+void mmu_enable(void);
+void mmu_disable(void);
+unsigned int mmu_is_enabled(void);
+
+void set_table_addr(void * addr);
+void * get_table_addr_virt(void);
+void * get_table_addr_phys(void);
+
+unsigned int create_mapping(void * virt, void * phys);
+unsigned int remove_mapping(void * virt);
+void * get_phys_addr(void * virt);
 
 #endif
