@@ -5,7 +5,7 @@
 
 //mapping types for the table entries (both course and small)
 #define MMU_NOMAP_TYPE      0x0
-#define MMU_COURSE_TYPE      0x1
+#define MMU_COURSE_TYPE     0x1
 #define MMU_SMALL_TYPE      0x2
 
 //access permissions for small table entries

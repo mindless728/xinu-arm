@@ -105,9 +105,6 @@ unsigned int create_mapping_ttb(void * virt, void * phys, mmu_course_desc * tabl
             course_desc->IMP = 0;
             course_desc->addr = ((unsigned int)page + i * 0x400) >> 10; //shift by 10 to fit into bit field
         }
-
-        //add the mapping for the page of memory allocated so the cpu can edit it
-        create_mapping_ttb(NULL, page, table);
     }
 
     //get the physcal address to the course table
