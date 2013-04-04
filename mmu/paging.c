@@ -1,26 +1,53 @@
 #include <stddef.h>
 #include <paging.h>
 #include <platform.h>
+#include <memory.h>
 
 unsigned int * global_PAT;
 unsigned int number_pages;
 unsigned int size_of_PAT;
 
 void paging_init(void) {
+    unsigned int kernel_end;
+    unsigned int used_pages;
+    unsigned int i;
+
+    //output start of debug
+    kprintf("\n*** PAGING DEBUG ***\n");
+
     //get number of pages
     number_pages = ((unsigned int)platform.maxaddr) >> PAGE_SHIFT;
+    kprintf("Number of Pages: %d\n", number_pages);
 
     //get number of pages the size of the PAT is
     size_of_PAT = (((number_pages + 7) >> 3) + PAGE_SIZE - 1) >> PAGE_SHIFT;
+    kprintf("Size of PAT: %d\n", size_of_PAT);
 
     //get the last location of the kernel rounded up to nearest page
-    
+    kernel_end = (unsigned int)&_end;
+    kernel_end >>= PAGE_SHIFT;
+    kernel_end++;
 
-    //mark all of those pages as used
+    kprintf("Kernel Pages Used: %d\n",kernel_end);
 
-    //get the size of the PAT in pages
+    //get a free memory address for the global PAT
+    global_PAT = (unsigned int *)page_to_address(kernel_end+1);
+    used_pages = kernel_end+size_of_PAT+1;
 
-    //set those pages as used
+    kprintf("PAT location: 0x%08x\n",global_PAT);
+    kprintf("Used Pages: %d\n", used_pages);
+
+    //set pages as used
+    for(i = 0; i < used_pages; ++i)
+        set_page_alloc(i);
+
+    for(i = 0; i < 16; ++i)
+        kprintf("%08X",global_PAT[i]);
+    kprintf("\n");
+
+    kprintf("\n");
+
+    while(1);
 }
 
 inline unsigned int get_page_index(unsigned int page) {

@@ -33,7 +33,6 @@ struct mmu_info {
     void * next_small_table_addr;
     void * mmu_ttb_virt;
     void * mmu_ttb_phys;
-    void * small_tables[4096];
 };
 
 unsigned int mmu_init(void);

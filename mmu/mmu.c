@@ -4,6 +4,8 @@
 unsigned int mmu_init(void) {
     paging_init();
 
+    //mmu_enable();
+
     return 0;
 }
 
@@ -86,6 +88,7 @@ unsigned int create_mapping_ttb(void * virt, void * phys, mmu_course_desc * tabl
     mmu_course_desc * course_desc;
     mmu_small_desc * small_desc;
     mmu_course_desc * table_phys;
+    int reenable_mmu = 0;
 
     //get the course description on the 4MB boundary
     course_index = get_course_index((void*)(((unsigned int)virt) & 0xFFC00000));
@@ -110,11 +113,15 @@ unsigned int create_mapping_ttb(void * virt, void * phys, mmu_course_desc * tabl
     //get the physcal address to the course table
     table_phys = (mmu_course_desc *)get_phys_addr(table);
 
-    //turn off interuptis
-    enable();
+    if(mmu_is_enabled()) {
+        reenable_mmu = 1;
 
-    //turn off the mmu
-    mmu_disable();
+        //turn off interuptis
+        disable();
+
+        //turn off the mmu
+        mmu_disable();
+    }
 
     //get the small descriptor from the index
     small_desc = get_small_desc(get_small_index(virt), table_phys);
@@ -126,11 +133,13 @@ unsigned int create_mapping_ttb(void * virt, void * phys, mmu_course_desc * tabl
     small_desc->ap = MMU_AP_NONE;
     small_desc->addr = ((unsigned int)phys) >> 12; //shift by 12 to fit into bit field
 
-    //turn on mmu
-    mmu_enable();
+    if(reenable_mmu) {
+        //turn on mmu
+        mmu_enable();
 
-    //turn on interupts
-    disable();
+        //turn on interupts
+        enable();
+    }
 }
 
 unsigned int remove_mapping(void * virt) {
