@@ -13,6 +13,10 @@
 #define MMU_AP_READ         0xAA
 #define MMU_AP_RDWR         0xFF
 
+//definitions of virtual memory locations of certain objects
+#define VIRT_HEAP_LOCATION      0x00000000
+#define VIRT_STACK_LOCATION     0x00000000
+
 typedef struct _mmu_course_desc {
     uint type           : 2 ;
     uint SBZ            : 3 ;
@@ -30,7 +34,6 @@ typedef struct mmu_small_desc {
 } mmu_small_desc;
 
 struct mmu_info {
-    void * next_small_table_addr;
     void * mmu_ttb_virt;
     void * mmu_ttb_phys;
 };

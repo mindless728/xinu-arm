@@ -2,15 +2,19 @@
 #include <paging.h>
 #include <platform.h>
 #include <memory.h>
+#include <thread.h>
 
 unsigned int * global_PAT;
 unsigned int number_pages;
 unsigned int size_of_PAT;
 
+extern void* memheap;
+
 void paging_init(void) {
     unsigned int kernel_end;
     unsigned int used_pages;
     unsigned int i;
+    unsigned int * loc;
 
     //output start of debug
     kprintf("\n*** PAGING DEBUG ***\n");
@@ -41,13 +45,14 @@ void paging_init(void) {
     for(i = 0; i < used_pages; ++i)
         set_page_alloc(i);
 
-    for(i = 0; i < 16; ++i)
-        kprintf("%08X",global_PAT[i]);
-    kprintf("\n");
+    kprintf("memheap = 0x%08X\n",memheap);
+    loc = (unsigned int *)memheap;
+    for(i = 0 ; i < 42; ++i)
+        ;//kprintf("0x%08X\n",*(--loc));
 
+    //TODO move the stack to a new location
+    //while(1);
     kprintf("\n");
-
-    while(1);
 }
 
 inline unsigned int get_page_index(unsigned int page) {
@@ -79,7 +84,7 @@ unsigned int is_page_free(unsigned int page) {
     shift = get_page_shift(page);
     mask = get_page_mask(page);
 
-    return (global_PAT[index] & mask) >> shift;
+    return !((global_PAT[index] & mask) >> shift);
 }
 
 void set_page_alloc(unsigned int page) {
@@ -140,7 +145,7 @@ unsigned int alloc_pages_aligned(unsigned int amount, unsigned int alignment) {
             if(!is_page_free(ret + i))
                 break;
 
-            //this deontes that enough pages have been found
+            //this denotes that enough pages have been found
             if(i == (amount - 1))
                 done = 1;
         }
