@@ -7,14 +7,18 @@
 unsigned int * global_PAT;
 unsigned int number_pages;
 unsigned int size_of_PAT;
+unsigned int * stack_base_addr;
 
-extern void* memheap;
+extern void * memheap;
 
 void paging_init(void) {
     unsigned int kernel_end;
     unsigned int used_pages;
     unsigned int i;
     unsigned int * loc;
+    register unsigned int * stack_loc asm("%sp");
+    unsigned int * temp;
+    register unsigned int * sp asm("%sp");
 
     //output start of debug
     kprintf("\n*** PAGING DEBUG ***\n");
@@ -39,19 +43,34 @@ void paging_init(void) {
     used_pages = kernel_end+size_of_PAT+1;
 
     kprintf("PAT location: 0x%08x\n",global_PAT);
+
+    //**** CODE TO MOVE STACK HERE ****
+    loc = (unsigned int *)roundmb(memheap) - 1;
+    temp = stack_base_addr = (unsigned int *)page_to_address(used_pages + STACK_PAGE_SIZE)-1;
+    used_pages += 2;
+    while(loc != stack_loc) {
+        *temp-- = *loc--;
+    }
+    
+    //changei the stack pointer
+    stack_loc = stack_base_addr - ((unsigned int*)roundmb(memheap)-1-stack_loc);
+    
+    kprintf("Base Stack Addr: 0x%08X\n", stack_base_addr);
+
     kprintf("Used Pages: %d\n", used_pages);
 
     //set pages as used
-    for(i = 0; i < used_pages; ++i)
-        set_page_alloc(i);
+    for(i = 0; i < (size_of_PAT << PAGE_SHIFT); ++i)
+        if(i < used_pages)
+            set_page_alloc(i);
+        else
+            unset_page_alloc(i);
 
-    kprintf("memheap = 0x%08X\n",memheap);
-    loc = (unsigned int *)memheap;
-    for(i = 0 ; i < 42; ++i)
-        ;//kprintf("0x%08X\n",*(--loc));
+    //change memheap and _end to better values, should auto change everything else
+    memheap = (void*)(stack_base_addr+1);
+    
 
-    //TODO move the stack to a new location
-    //while(1);
+    //extra new line for readability
     kprintf("\n");
 }
 

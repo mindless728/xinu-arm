@@ -5,10 +5,12 @@
 
 #define PAGE_SIZE 4096
 #define PAGE_SHIFT 12
+#define STACK_PAGE_SIZE 2
 
 extern unsigned int * global_PAT; //address of the global PAT
 extern unsigned int number_pages; //number of pages in memory
 extern unsigned int size_of_PAT; //size  of the PAT in pages
+extern unsigned int * stack_base_addr; //address of the base of the stack
 
 void paging_init(void);
 
@@ -18,7 +20,7 @@ inline unsigned int get_page_mask(unsigned int page);
 inline void * page_to_address(unsigned int page);
 inline unsigned int address_to_page(void * address);
 
-unsigned int is_page_free(unsigned int piage);
+unsigned int is_page_free(unsigned int page);
 void set_page_alloc(unsigned int page);
 void set_page_alloc_PAT(unsigned int page, unsigned int * PAT);
 void unset_page_alloc(unsigned int page);

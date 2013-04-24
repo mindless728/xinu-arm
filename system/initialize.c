@@ -31,6 +31,7 @@
 #include <safemem.h>
 
 #include <uart.h> //DEBUG
+#include <paging.h>
 
 
 /* Linker provides start and end of image */
@@ -110,9 +111,10 @@ int nulluser(void)
 #endif
 
     kprintf("%10d bytes stack space.\r\n", (ulong)memheap - (ulong)&_end);
+    //kprintf("%10d bytes stack space.\r\n", STACK_PAGE_SIZE << PAGE_SHIFT);
 #ifdef DETAIL
-    kprintf("           [0x%08X to 0x%08X]\r\n",
-            (ulong)&_end, (ulong)memheap - 1);
+    kprintf("           [0x%08X to 0x%08X]\r\n",(ulong)&_end, (ulong)memheap - 1);
+    //kprintf("           [0x%08X to 0x%08X]\r\n",(void*)stack_base_addr - (STACK_PAGE_SIZE << PAGE_SHIFT)+4,(void*)stack_base_addr+3);
 #endif
 
     kprintf("%10d bytes heap space.\r\n",
