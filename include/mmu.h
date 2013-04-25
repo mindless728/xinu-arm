@@ -14,8 +14,12 @@
 #define MMU_AP_RDWR         0xFF
 
 //definitions of virtual memory locations of certain objects
-#define VIRT_HEAP_LOCATION      0x00000000
-#define VIRT_STACK_LOCATION     0x00000000
+#define VIRT_HEAP_LOCATION      0x10000000
+#define VIRT_STACK_LOCATION     0x30000000
+
+//variables needed to book keep some things
+extern void * kheap_next_addr;
+extern void * kernel_L1_table;
 
 typedef struct _mmu_course_desc {
     uint type           : 2 ;

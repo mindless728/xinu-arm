@@ -172,13 +172,13 @@ static int sysinit(void)
     kprintf("memheap is 0x%x\r\n", memheap);
 
     /* Initialize free memory list */
-    memheap = roundmb(memheap);
-    platform.maxaddr = truncmb(platform.maxaddr);
-    kprintf("platform.maxaddr is 0x%x\r\n", platform.maxaddr);
-    memlist.next = pmblock = (struct memblock *)memheap;
-    memlist.length = (uint)(platform.maxaddr - memheap);
-    pmblock->next = NULL;
-    pmblock->length = (uint)(platform.maxaddr - memheap);
+    //memheap = roundmb(memheap);
+    //platform.maxaddr = truncmb(platform.maxaddr);
+    //kprintf("platform.maxaddr is 0x%x\r\n", platform.maxaddr);
+    //memlist.next = pmblock = (struct memblock *)memheap;
+    //memlist.length = (uint)(platform.maxaddr - memheap);
+    //pmblock->next = NULL;
+    //pmblock->length = (uint)(platform.maxaddr - memheap);
 
     /* Initialize thread table */
     for (i = 0; i < NTHREAD; i++)

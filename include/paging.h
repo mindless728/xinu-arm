@@ -6,6 +6,7 @@
 #define PAGE_SIZE 4096
 #define PAGE_SHIFT 12
 #define STACK_PAGE_SIZE 2
+#define HEAP_PAGE_SIZE 16
 
 extern unsigned int * global_PAT; //address of the global PAT
 extern unsigned int number_pages; //number of pages in memory

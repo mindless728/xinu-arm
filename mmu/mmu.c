@@ -1,8 +1,50 @@
 #include <mmu.h>
 #include <paging.h>
 
+void * kheap_next_addr;
+void * kernel_L1_table;
+
 unsigned int mmu_init(void) {
+    unsigned int pages;
+    void * phys_addr;
+    void * virt_addr;
+    void * temp;
+    unsigned int i;
+    register void * sp asm("%sp");
+
     paging_init();
+
+    //create the L1 table and map it
+    pages = alloc_pages_aligned(4,4); //allocate 4 pages on 4 page boundary
+    phys_addr = page_to_address(pages);
+    virt_addr = (void *)global_PAT + (size_of_PAT << PAGE_SHIFT);
+
+    for(i = 0 ; i < 4; ++i)
+        create_mapping(virt_addr + (i << PAGE_SHIFT), phys_addr + (i << PAGE_SHIFT));
+
+    //map the stack to the virtual location
+    for(i = 0; i < STACK_PAGE_SIZE; ++i)
+        create_mapping(VIRT_STACK_LOCATION - ((STACK_PAGE_SIZE - i) << PAGE_SHIFT), __end + (i << PAGE_SHIFT));
+
+    //id map the kernel and global_PAT
+    temp = 0;
+    while(temp <= global_PAT) {
+        create_mapping(temp,temp);
+        temp += PAGE_SIZE;
+    }
+
+    //allocate some base heap space, initialize the heap, map it
+    pages = alloc_pages(HEAP_PAGE_SIZE);
+    phys_addr = page_to_address(pages);
+
+        //add the memory to the memlist, use the virtual address (copy from initialize.c)
+
+        //map the heap to virtual memory
+    for(i = 0; i < HEAP_PAGE_SIZE; ++i)
+        create_mapping(VIRT_HEAP_LOCATION + (i << PAGE_SIZE), phys_addr + (i << PAGE_SHIFT));
+
+    //change the location of the stack into the virtual memory
+    sp = VIRT_STACK_LOCATION - ((void *)stack_base_addr-sp)-4;
 
     //mmu_enable();
 
