@@ -117,11 +117,9 @@ int nulluser(void)
     kprintf("           [0x%08X to 0x%08X]\r\n",(ulong)__end, (ulong)memheap - 1);
 #endif
 
-    kprintf("%10d bytes heap space.\r\n",
-            (ulong)platform.maxaddr - (ulong)memheap);
+    //kprintf("%10d bytes heap space.\r\n",(ulong)platform.maxaddr - (ulong)memheap);
 #ifdef DETAIL
-    kprintf("           [0x%08X to 0x%08X]\r\r\n\n",
-            (ulong)memheap, (ulong)platform.maxaddr - 1);
+    //kprintf("           [0x%08X to 0x%08X]\r\r\n\n",(ulong)memheap, (ulong)platform.maxaddr - 1);
 #endif
     kprintf("\r\n");
 
