@@ -110,11 +110,11 @@ int nulluser(void)
             (ulong)_start, (ulong)&_end - 1);
 #endif
 
-    kprintf("%10d bytes stack space.\r\n", (ulong)memheap - (ulong)&_end);
-    //kprintf("%10d bytes stack space.\r\n", STACK_PAGE_SIZE << PAGE_SHIFT);
+    //kprintf("%10d bytes stack space.\r\n", (ulong)memheap - (ulong)&_end);
+    kprintf("%10d bytes stack space.\r\n", (ulong)memheap - (ulong)__end);
 #ifdef DETAIL
-    kprintf("           [0x%08X to 0x%08X]\r\n",(ulong)&_end, (ulong)memheap - 1);
-    //kprintf("           [0x%08X to 0x%08X]\r\n",(void*)stack_base_addr - (STACK_PAGE_SIZE << PAGE_SHIFT)+4,(void*)stack_base_addr+3);
+    //kprintf("           [0x%08X to 0x%08X]\r\n",(ulong)&_end, (ulong)memheap - 1);
+    kprintf("           [0x%08X to 0x%08X]\r\n",(ulong)__end, (ulong)memheap - 1);
 #endif
 
     kprintf("%10d bytes heap space.\r\n",
@@ -194,8 +194,8 @@ static int sysinit(void)
     thrptr->state = THRCURR;
     thrptr->prio = 0;
     strncpy(thrptr->name, "prnull", 7);
-    thrptr->stkbase = (void *)&_end;
-    thrptr->stklen = (ulong)memheap - (ulong)&_end;
+    thrptr->stkbase = (void *)__end;
+    thrptr->stklen = (ulong)memheap - (ulong)__end;
     thrptr->stkptr = 0;
     thrptr->memlist.next = NULL;
     thrptr->memlist.length = 0;

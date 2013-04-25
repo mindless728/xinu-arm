@@ -11,6 +11,7 @@ extern unsigned int * global_PAT; //address of the global PAT
 extern unsigned int number_pages; //number of pages in memory
 extern unsigned int size_of_PAT; //size  of the PAT in pages
 extern unsigned int * stack_base_addr; //address of the base of the stack
+extern unsigned int * __end; //used to calculate bottom of stack
 
 void paging_init(void);
 

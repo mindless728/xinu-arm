@@ -8,6 +8,7 @@ unsigned int * global_PAT;
 unsigned int number_pages;
 unsigned int size_of_PAT;
 unsigned int * stack_base_addr;
+unsigned int * __end;
 
 extern void * memheap;
 
@@ -57,8 +58,6 @@ void paging_init(void) {
     
     kprintf("Base Stack Addr: 0x%08X\n", stack_base_addr);
 
-    kprintf("Used Pages: %d\n", used_pages);
-
     //set pages as used
     for(i = 0; i < (size_of_PAT << PAGE_SHIFT); ++i)
         if(i < used_pages)
@@ -66,9 +65,17 @@ void paging_init(void) {
         else
             unset_page_alloc(i);
 
-    //change memheap and _end to better values, should auto change everything else
+    //change memheap to better value, should auto change everything else
     memheap = (void*)(stack_base_addr+1);
     
+    //setup the new __end so that initialize can use it and calculate the new bottom of stack location
+    __end = (unsigned int *)((void*)stack_base_addr - (STACK_PAGE_SIZE << PAGE_SHIFT))+1;
+
+    //debugging info for bottom of stack
+    kprintf("__end: 0x%08X\n", __end);
+
+    //used pages after running this code
+    kprintf("Used Pages: %d\n", used_pages);
 
     //extra new line for readability
     kprintf("\n");
