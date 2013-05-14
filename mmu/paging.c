@@ -19,7 +19,7 @@ void paging_init(void) {
     unsigned int * loc;
     register unsigned int * stack_loc asm("%sp");
     unsigned int * temp;
-    register unsigned int * sp asm("%sp");
+    //register unsigned int * sp asm("%sp");
 
     //output start of debug
     kprintf("\n*** PAGING DEBUG ***\n");
@@ -52,10 +52,19 @@ void paging_init(void) {
     while(loc != stack_loc) {
         *temp-- = *loc--;
     }
+
+    /*for(;loc < roundmb(memheap); ++loc)
+        kprintf("%08X ",*loc);
+    kprintf("\n");
+
+    kprintf("Old Stack: 0x%08X - 0x%08X\n",stack_loc,roundmb(memheap));
+    for(loc = 0; loc < 0xFFFFFF; ++loc)
+        if(*loc == 0x000109A0)
+            kprintf("found: 0x%08X\n",loc);*/
     
-    //changei the stack pointer
-    stack_loc = stack_base_addr - ((unsigned int*)roundmb(memheap)-1-stack_loc);
-    
+    //change the stack pointer
+    stack_loc = temp;
+
     kprintf("Base Stack Addr: 0x%08X\n", stack_base_addr);
 
     //set pages as used

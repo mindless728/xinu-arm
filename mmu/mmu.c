@@ -14,6 +14,8 @@ unsigned int mmu_init(void) {
 
     paging_init();
 
+    kprintf("sp = 0x%08X\n",sp);
+
     //create the L1 table and map it
     pages = alloc_pages_aligned(4,4); //allocate 4 pages on 4 page boundary
     phys_addr = page_to_address(pages);
@@ -44,7 +46,7 @@ unsigned int mmu_init(void) {
         create_mapping(VIRT_HEAP_LOCATION + (i << PAGE_SIZE), phys_addr + (i << PAGE_SHIFT));
 
     //change the location of the stack into the virtual memory
-    sp = VIRT_STACK_LOCATION - ((void *)stack_base_addr-sp)-4;
+    //sp = VIRT_STACK_LOCATION - ((void *)stack_base_addr-sp)-4;
 
     //mmu_enable();
 

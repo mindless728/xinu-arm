@@ -43,12 +43,14 @@ int platforminit( void )
     //initialize the VIC
     vic_init();
 
+    //output the location of platform init
+    kprintf("platforminit: 0x%08X\n",platforminit);
+
     /*
      * Go into an infinite loop waiting for user to type the @ sign.
      * This will get Xinu going and produce output, like "Welcome
      * to Xinu."
      */
-
     i = 0;
     while (1) {
         if (i==0) {
