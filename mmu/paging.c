@@ -230,3 +230,19 @@ void dealloc_page_table(unsigned int * PAT) {
     for(i = 0; i < indices; ++i)
         global_PAT[i] &= ~(PAT[i]);
 }
+
+void * get_mem(unsigned int bytes){
+    unsigned int  page;
+    if(bytes==4096){
+       page=alloc_page();
+    }else if(bytes>4096){
+        int num_pages=bytes/4096;
+        int over=bytes-(4096*num_pages);
+        if(over==0){
+           page = alloc_pages(num_pages);
+        }else{
+            page = alloc_pages(num_pages+1);
+        }
+    }
+        return page_to_address(page);
+}

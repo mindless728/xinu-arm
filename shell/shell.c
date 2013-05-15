@@ -22,6 +22,7 @@ const struct centry commandtab[] = {
 #if NETHER
     {"arp", FALSE, xsh_arp},
 #endif
+    {"malloc",TRUE,xsh_malloc},
     {"clear", TRUE, xsh_clear},
     {"date", FALSE, xsh_date},
 #if USE_TLB

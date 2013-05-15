@@ -38,5 +38,5 @@ void dealloc_page_PAT(unsigned int page, unsigned int * PAT);
 void dealloc_pages(unsigned int page, unsigned int amount);
 void dealloc_pages_PAT(unsigned int page, unsigned int amount, unsigned int * PAT);
 void dealloc_page_table(unsigned int * PAT);
-
+void * get_mem(unsigned int);
 #endif

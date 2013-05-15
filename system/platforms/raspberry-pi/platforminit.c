@@ -71,8 +71,7 @@ int platforminit( void )
     //platform.uart_dll = 1337 /*Divisor Latch Low Byte, not useful?*/ /** \todo fixme */;
     //platform.uart_irqnum = 0; /*UART IRQ number? Not read anywhere.*/
 
-    //mmu initialization
+   // mmu initialization
     mmu_init();
-
     return OK;
 }
